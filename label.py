@@ -9,24 +9,34 @@ import enviroment as env
 def label(js):
     # load descriptor
     boundingBoxes = []
-    for speaker in js.sample.speakers:
-        startFrame = stft.time_to_frame(speaker.startTime)
-        endFrame = stft.time_to_frame(speaker.endTime)
-        width = stft.time_to_frame(speaker.duration)
+    for speaker in js['sample']['speakers']:
+        startFrame = stft.time_to_frame(speaker['startTime'])
+        endFrame = stft.time_to_frame(speaker['endTime'])
+        width = stft.time_to_frame(speaker['duration'])
 
         heigth = len(stft.freqBins())
 
         x = (startFrame+endFrame)/2
         y = heigth/2 # always center on the middel of the picture
 
-        clas = simpleOneHot(speaker.direction.azimuth)
+        clas = simpleClassify(speaker['direction']['azimuth'])
 
-        box = [clas, x, y, width, heigth]
+        box = stringifySimpleLabel([clas, x, y, width, heigth])
+
         boundingBoxes.append(box)
+    return boundingBoxes
 
 def exportLabel(lab,path):
     with  open(path,'w') as f:
         f.writelines(lab)
+
+
+def stringifySimpleLabel(lab):
+    lab = list(map(str, lab))
+    return ' '.join(lab)
+
+def stringifyLabel(lab):
+    pass
 
 def divideInterval(interval, n):
     [minimum, maximum] = interval

@@ -15,6 +15,6 @@ azimuth_slice_count = 9  # divide 180° into 36 slices with size of 5°
 anlges_interval = [-math.pi, math.pi]
 
 """IO"""
-source_dir = "worspace/training/KEC/"
-target_dir = "workspace/featureData/"
-split = [70,20,10] #train valid test , will get softmaxed
+source_dir = "/workspace/training/KEC/"
+target_dir = "/workspace/featureData/"
+split = [7,2,1] #train valid test , will get softmaxed

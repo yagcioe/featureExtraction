@@ -109,13 +109,13 @@ def libSpec3(room=None):
 
     iid = stft.to_iid(d1, d2) if env.iid else np.ones(d1.shape)
 
-    intensity = np.maximum(np.abs(d1),np.abs(d2))
+    intensity = np.maximum(np.abs(d1), np.abs(d2))
     feature = np.dstack((ipd, iid, intensity))
 
     print(feature[:, :, 0])
     plt.figure(dpi=200)
     plt.imshow(hsv_to_rgb(feature), origin='lower', extent=(
-        0, stft.frame_to_time(len(d1[0])), 0, stft.freqBins()[-1]), aspect='auto',interpolation='none')
+        0, stft.frame_to_time(len(d1[0])), 0, stft.freqBins()[-1]), aspect='auto', interpolation='none')
     plt.xlabel("t [s]")
     plt.ylabel("f [Hz]")
     plt.title("IA-STFT")
@@ -123,42 +123,50 @@ def libSpec3(room=None):
 
 
 def testLable():
-    print(np.round( label.classifyOneHot(0),3))
-    print(np.round( label.simpleClassify(0),3))
-    print(np.round( label.simpleOneHot(0),3))
+    print(np.round(label.classifyOneHot(0), 3))
+    print(np.round(label.simpleClassify(0), 3))
+    print(np.round(label.simpleOneHot(0), 3))
 
-    print(np.round(label.classifyOneHot(math.pi),3))
-    print(np.round(label.simpleClassify(math.pi),3))
-    print(np.round(label.simpleOneHot(math.pi),3))
+    print(np.round(label.classifyOneHot(math.pi), 3))
+    print(np.round(label.simpleClassify(math.pi), 3))
+    print(np.round(label.simpleOneHot(math.pi), 3))
 
-    print(np.round(label.classifyOneHot(-math.pi),3))
-    print(np.round(label.simpleClassify(-math.pi),3))
-    print(np.round(label.simpleOneHot(-math.pi),3))
+    print(np.round(label.classifyOneHot(-math.pi), 3))
+    print(np.round(label.simpleClassify(-math.pi), 3))
+    print(np.round(label.simpleOneHot(-math.pi), 3))
 
-    print(np.round(label.classifyOneHot(-math.pi/2),3))
-    print(np.round(label.simpleClassify(-math.pi/2),3))
-    print(np.round(label.simpleOneHot(-math.pi/2),3))
+    print(np.round(label.classifyOneHot(-math.pi/2), 3))
+    print(np.round(label.simpleClassify(-math.pi/2), 3))
+    print(np.round(label.simpleOneHot(-math.pi/2), 3))
 
-    print(np.round(label.classifyOneHot(+math.pi/2),3))
-    print(np.round(label.simpleClassify(+math.pi/2),3))
-    print(np.round(label.simpleOneHot(+math.pi/2),3))
+    print(np.round(label.classifyOneHot(+math.pi/2), 3))
+    print(np.round(label.simpleClassify(+math.pi/2), 3))
+    print(np.round(label.simpleOneHot(+math.pi/2), 3))
 
-    print(np.round(label.classifyOneHot(-(2/9)*math.pi),3))
-    print(np.round(label.simpleClassify(-(2/9)*math.pi),3))
-    print(np.round(label.simpleOneHot(-(2/9)*math.pi),3))
+    print(np.round(label.classifyOneHot(-(2/9)*math.pi), 3))
+    print(np.round(label.simpleClassify(-(2/9)*math.pi), 3))
+    print(np.round(label.simpleOneHot(-(2/9)*math.pi), 3))
 
-def testPil():
-    [y1, y2] = loadRoom()
+
+
+def testDb():
+    filePath = '/workspace/training/KEC/12/room.wav'
+    wav, sr = librosa.load(filePath, mono=False, sr=env.sampleRate)
+
+    [y1, y2] = wav
     d1 = stft.transform(y1)
     d2 = stft.transform(y2)
-    print(d1.shape)
-    ipd = stft.to_ipd(d1, d2) / (math.pi*2)
+    intensity = np.maximum(np.abs(d1), np.abs(d2))
 
-    iid = stft.to_iid(d1, d2) if env.iid else np.ones(d1.shape)
 
-    intensity = np.maximum(np.abs(d1),np.abs(d2))
-    feature = np.dstack((ipd, iid, intensity))
-
-    img = PIL.Image.fromarray(feature,mode='HSV')
-    return img
-
+    intensity = librosa.amplitude_to_db(
+        intensity, ref=0)
+    low= np.min(intensity)
+    high= np.max(intensity)
+    diff = high-low
+    intensity = (intensity-low) / diff
+    print(np.min(intensity))
+    print(np.max(intensity))
+    plt.figure()
+    plt.imshow(intensity,cmap='gray', origin='lower',interpolation='none')
+    plt.show()

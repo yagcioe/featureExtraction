@@ -20,11 +20,12 @@ def to_ipd(D,E):
     return boundAngle(diff)
 
 
+
 def to_intensity(D):
    return np.abs(D)
 
 def to_dB(D):
-    return librosa.amplitude_to_db(to_intensity(D),np.max)
+    return librosa.amplitude_to_db(D,ref=0)
 
 
 def freqBins():

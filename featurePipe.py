@@ -10,50 +10,53 @@ import feature
 import label
 
 
-def softmax(list):
-    sum = np.sum(np.exp(list))
-    return [np.exp(x)/sum for x in list]
+def perc(list):
+    sum = np.sum(list)
+    return [x/sum for x in list]
 
 
-def splitIndex(split, len):
-    split = softmax(split)
-    return [np.round(sum(split[0:i]) * len) for i in range(len(split))]
+def splitIndex(split, n):
+    split = perc(split)
+    return [int(np.round(sum(split[0:i]) * n)) for i in range(len(split))]
 
 
 def run():
-    allSamples = os.listdir(env.target_dir)
+    allSamples = os.listdir(env.source_dir)
     random.shuffle(allSamples)
     idx = splitIndex(env.split, len(allSamples))
+    print('start train')
+    transformSet(allSamples[idx[0]:idx[1]], 'train/')
+    print('start val')
 
-    transformSet(allSamples[0:idx[0]], 'train/')
-    transformSet(allSamples[idx[0]:idx[1]], 'val/')
-    transformSet(allSamples[idx[1]:idx[2]], 'test/')
+    transformSet(allSamples[idx[1]:idx[2]], 'val/')
+    print('start test')
+
+    transformSet(allSamples[idx[2]:len(allSamples)], 'test/')
+    print('done')
 
 
 def transformSet(allPAths, target):
     pathToExport = env.target_dir+target
     shutil.rmtree(pathToExport, True)
+    imgPath = pathToExport+'images/'
+    labelPath = pathToExport+'labels/'
+    os.makedirs(imgPath)
+    os.makedirs(labelPath)
+
     for s in allPAths:
-        fet, lab, id = transformSample(s)
-
-
-        imgPath= pathToExport+'images/'
-        os.makedirs(imgPath)
-        feature.exportFeature(fet, imgPath+f'{id}/')
-
-        labelPath=pathToExport+'labels/'
-        os.makedirs(labelPath)
-        label.exportLabel(lab, labelPath+f'{id}/')
+        fet, lab, id = transformSample(env.source_dir+s+"/")
+        feature.exportFeature(fet, imgPath+f'{id}.png')
+        label.exportLabel(lab, labelPath+f'{id}.txt')
 
 
 def transformSample(s):
-    wav = librosa.load(s+'room.wav')
+    wav, sr = librosa.load(s+'room.wav', sr=env.sampleRate, mono=False)
     fet = feature.feature(wav)
 
     js = json_load(s+'description.json')
     lab = label.label(js)
 
-    id = js.sample.id
+    id = js['sample']['id']
     return fet, lab, id
 
 
