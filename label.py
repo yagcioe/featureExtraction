@@ -28,12 +28,13 @@ def label(js):
 
 def exportLabel(lab,path):
     with  open(path,'w') as f:
-        f.writelines(lab)
+        for l in lab:
+            f.write(l+"\n")
 
 
 def stringifySimpleLabel(lab):
     lab = list(map(str, lab))
-    return ' '.join(lab)
+    return '\t'.join(lab)
 
 def stringifyLabel(lab):
     pass
