@@ -44,7 +44,7 @@ def boundAngle(phi):
 
 def intensityFeature(D,E):
     intensity = np.maximum(np.abs(D),np.abs(E))
-    # intensity = stft.to_dB(intensity)
+    intensity = stft.to_dB(intensity)
 
     low= np.min(intensity)
     high= np.max(intensity)
