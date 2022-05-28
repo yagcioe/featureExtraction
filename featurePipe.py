@@ -37,7 +37,7 @@ def run():
 
 def transformSet(allPAths, target):
     pathToExport = env.target_dir+target
-    shutil.rmtree(pathToExport, True)
+    shutil.rmtree(pathToExport)
     imgPath = pathToExport+'images/'
     labelPath = pathToExport+'labels/'
     os.makedirs(imgPath)
