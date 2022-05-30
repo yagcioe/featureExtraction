@@ -152,7 +152,6 @@ def testLable():
     print(np.round(label.simpleOneHot(-(2/9)*math.pi), 3))
 
 
-
 def testDb():
     filePath = '/workspace/training/KEC/12/room.wav'
     wav, sr = librosa.load(filePath, mono=False, sr=env.sampleRate)
@@ -162,17 +161,16 @@ def testDb():
     d2 = stft.transform(y2)
     intensity = np.maximum(np.abs(d1), np.abs(d2))
 
-
     intensity = librosa.amplitude_to_db(
         intensity, ref=0)
-    low= np.min(intensity)
-    high= np.max(intensity)
+    low = np.min(intensity)
+    high = np.max(intensity)
     diff = high-low
     intensity = (intensity-low) / diff
     print(np.min(intensity))
     print(np.max(intensity))
     plt.figure()
-    plt.imshow(intensity,cmap='gray', origin='lower',interpolation='none')
+    plt.imshow(intensity, cmap='gray', origin='lower', interpolation='none')
     plt.show()
 
 
@@ -181,10 +179,46 @@ def testlabel():
     lab = label.label(js)
     print(lab)
 
-    
 
 def testFeature():
-    wav, sr = librosa.load('/workspace/training/KEC/2/room.wav', mono=False, sr=env.sampleRate)
+    wav, sr = librosa.load(
+        '/workspace/training/KEC/2/room.wav', mono=False, sr=env.sampleRate)
     f = feature.feature(wav)
     plt.figure(f)
-    feature.exportFeature(f,env.target_dir+"test.png")
+    feature.exportFeature(f, env.target_dir+"test.png")
+
+
+def testLable2():
+    n = 37
+    pi = math.pi
+    fr = pi/n
+    sections = []
+    for i in np.arange(-(n/2), (n/2), 1):
+        sections.append([i, i+1])
+    sections = np.array(sections)
+    sections = fr*sections
+
+    def findSection(a):
+        for i, [miin, maax] in enumerate(sections):
+            if a >= miin and a <= maax:
+                return i
+        return -1
+
+    base = '/workspace/training/KEC'
+    dirs = os.listdir(base)
+
+    for d in dirs:
+        js = json_load(f'{base}/{d}/description.json')
+        speakers = js['sample']['speakers']
+        az = [s['direction']['azimuth'] for s in speakers]
+        lab = label.label(js)
+
+        for i in range(2):
+
+            if(findSection(az[i]) != label.simpleClassify(az[i])):
+                print('azimuth: '+str(az[i]))
+
+                print('diff')
+                print('correct section:'+str(findSection(az[i])))
+                print(label.simpleClassify(az[i]))
+                print('')

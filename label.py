@@ -1,7 +1,6 @@
 
 from matplotlib.font_manager import json_load
-from numpy import argmax
-
+import numpy as np
 import stft
 import enviroment as env
 
@@ -18,21 +17,22 @@ def label(js):
         heigth = 1
 
         x = (startFrame+endFrame)/2
-        
-        x= x / duration
+
+        x = x / duration
         width = width / duration
-        y =0.5 # always center on the middel of the picture
-        
-        azimuth= speaker['direction']['azimuth']
+        y = 0.5  # always center on the middel of the picture
+
+        azimuth = speaker['direction']['azimuth']
         clas = simpleClassify(azimuth)
 
-        box = [clas, x, y, width, heigth] # normalize to [0,1]
+        box = [clas, x, y, width, heigth]  # normalize to [0,1]
 
         boundingBoxes.append(box)
     return boundingBoxes
 
-def exportLabel(lab,path):
-    with  open(path,'w') as f:
+
+def exportLabel(lab, path):
+    with open(path, 'w') as f:
         for l in lab:
             f.write(stringifySimpleLabel(l)+"\n")
 
@@ -41,36 +41,46 @@ def stringifySimpleLabel(lab):
     lab = list(map(str, lab))
     return '\t'.join(lab)
 
+
 def stringifyLabel(lab):
     pass
 
+
 def divideInterval(interval, n):
-    [minimum, maximum] = interval
-    diff = maximum-minimum
-    step = diff/n
-    return [(i*step)+minimum for i in range(n+1)]
+    diff = interval[1]-interval[0]
+    fr = diff/n
+    sections = []
+    for i in np.arange(-(n/2), (n/2), 1):
+        sections.append(np.array([i, i+1]))
+    sections = np.array(sections)
+    sections = fr*sections
+    return sections, fr
 
 
 def classifyOneHot(azimuth):
     """return array of classes. one class has a percwntage of 1 when azimuth is perfectly centered, otherwise the azimuth has some overlap in different classes """
-    # size n+1 so that for loop is well defined
-    intervalls = divideInterval(env.anlges_interval, env.azimuth_slice_count)
-    step = (env.anlges_interval[1]-env.anlges_interval[0]
-            )/env.azimuth_slice_count  # max-min/2
+    intervalls, step = divideInterval(env.anlges_interval, env.azimuth_slice_count)
     classes = []
-    for n in range(env.azimuth_slice_count):
-        start = max(intervalls[n], azimuth-(step/2))
-        end = min(intervalls[n+1], azimuth+(step/2))
+    low = azimuth-(step/2)
+    high = azimuth+(step/2)
+    for n, intv in enumerate(intervalls):
+        if (low >= intv[0] and low <= intv[1]) or \
+                (high >= intv[0] and high <= intv[1]):
+            # wenn anfang oder ende des step intevall um azimuth in der beobachteten section ist
 
-        # if start>end then azimuth is not in this segment
-        lengthInSegment = max(0, end-start)
-        percentageInSegment = lengthInSegment/step
-        classes.append(percentageInSegment)
+            start = max(intv[0], low)
+            end = min(intv[1], high)
+
+            lengthInSegment = end-start
+            percentageInSegment = lengthInSegment/step
+            classes.append(percentageInSegment)
+        else:
+            classes.append(0)
     return classes
 
 
 def simpleClassify(azimuth):
-    return argmax(classifyOneHot(azimuth))
+    return np.argmax(classifyOneHot(azimuth))
 
 
 def simpleOneHot(azimuth):

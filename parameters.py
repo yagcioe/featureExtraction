@@ -12,7 +12,7 @@ hop_Length = 256
 
 """LAbel generation"""
 azimuth_slice_count = 37  # divide 180° into 36 slices with size of 5°
-anlges_interval = [-math.pi, math.pi]
+anlges_interval = [-math.pi/2, math.pi/2]
 
 """IO"""
 source_dir = "/workspace/training/KEC/"
