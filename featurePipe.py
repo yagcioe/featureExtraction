@@ -5,9 +5,9 @@ import shutil
 import librosa
 from matplotlib.font_manager import json_load
 import numpy as np
-import enviroment as env
-import feature
-import label
+import featureExtraction.enviroment as env
+import featureExtraction.feature as feature
+import featureExtraction.label as label
 
 
 def perc(list):
@@ -36,28 +36,36 @@ def run():
 
 
 def transformSet(allPAths, target):
-    pathToExport = env.target_dir+target
-    shutil.rmtree(pathToExport)
-    imgPath = pathToExport+'images/'
-    labelPath = pathToExport+'labels/'
-    os.makedirs(imgPath)
-    os.makedirs(labelPath)
-
+    shutil.rmtree(env.target_dir+target)
     for s in allPAths:
-        fet, lab, id = transformSample(env.source_dir+s+"/")
-        feature.exportFeature(fet, imgPath+f'{id}.png')
-        label.exportLabel(lab, labelPath+f'{id}.txt')
+        fet, lab, id = transformPath(s)
+        export(fet, lab, id, target)
 
 
-def transformSample(s):
-    wav, sr = librosa.load(s+'room.wav', sr=env.sampleRate, mono=False)
+def export(feat, lab, id, target):
+    feature.exportFeature(feat, f'{id}.png', env.target_dir+target+'images/')
+    label.exportLabel(lab, f'{id}.txt', env.target_dir+target+'labels/')
+
+
+def transformPath(s):
+    wav, js = loadSample(s)
+    return transform(wav, js)
+
+
+def loadSample(path):
+    wav, sr = librosa.load(path+'room.wav', sr=env.sampleRate, mono=False)
+    js = json_load(path+'description.json')
+    return wav, js
+
+
+def transform(wav, js):
     fet = feature.feature(wav)
-
-    js = json_load(s+'description.json')
     lab = label.label(js)
-
     id = js['sample']['id']
     return fet, lab, id
+
+def clearDir():
+    shutil.rmtree(env.target_dir)
 
 
 if __name__ == '__main__':

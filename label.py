@@ -1,8 +1,7 @@
 
-from matplotlib.font_manager import json_load
 import numpy as np
-import stft
-import enviroment as env
+import featureExtraction.stft as stft
+import featureExtraction.enviroment as env
 
 
 def label(js):
@@ -31,8 +30,9 @@ def label(js):
     return boundingBoxes
 
 
-def exportLabel(lab, path):
-    with open(path, 'w') as f:
+def exportLabel(lab, name, path):
+    stft.ensurePath(path)
+    with open(path+name, 'w') as f:
         for l in lab:
             f.write(stringifySimpleLabel(l)+"\n")
 
@@ -59,7 +59,8 @@ def divideInterval(interval, n):
 
 def classifyOneHot(azimuth):
     """return array of classes. one class has a percwntage of 1 when azimuth is perfectly centered, otherwise the azimuth has some overlap in different classes """
-    intervalls, step = divideInterval(env.anlges_interval, env.azimuth_slice_count)
+    intervalls, step = divideInterval(
+        env.anlges_interval, env.azimuth_slice_count)
     classes = []
     low = azimuth-(step/2)
     high = azimuth+(step/2)

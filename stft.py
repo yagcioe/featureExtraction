@@ -1,6 +1,7 @@
 import math
+import os
 import librosa
-import enviroment as env
+import featureExtraction.enviroment as env
 import numpy as np
 
 
@@ -57,3 +58,7 @@ def time_to_frame(time):
 
 def boundAngle(phi):
     return phi % (2*math.pi)
+
+def ensurePath(path):
+    if(not os.path.isdir(path)):
+        os.makedirs(path)

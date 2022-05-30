@@ -4,8 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 
-import enviroment as env
-import stft
+import featureExtraction.enviroment as env
+import featureExtraction.stft as stft
 
 
 def feature(wav):
@@ -59,8 +59,10 @@ def iidFeature(D, E):
     return stft.to_iid(D, E) if env.iid else np.ones(D.shape)
 
 
-def exportFeature(fig, path):
+def exportFeature(fig,name ,path):
+    stft.ensurePath(path)
+    fullPath=path+name
     plt.figure(fig)
     plt.axis('off')
-    plt.savefig(path, bbox_inches='tight',pad_inches=0)
+    plt.savefig(fullPath, bbox_inches='tight',pad_inches=0)
     plt.close(fig)
