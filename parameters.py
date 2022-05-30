@@ -11,7 +11,7 @@ hop_Length = 256
 
 
 """LAbel generation"""
-azimuth_slice_count = 9  # divide 180° into 36 slices with size of 5°
+azimuth_slice_count = 37  # divide 180° into 36 slices with size of 5°
 anlges_interval = [-math.pi, math.pi]
 
 """IO"""
