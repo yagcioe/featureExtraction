@@ -1,7 +1,10 @@
-from re import T
+
 from matplotlib.colors import hsv_to_rgb
 import math
+
+from matplotlib.font_manager import json_load
 import enviroment as env
+import feature
 import label
 import stft
 import os
@@ -10,7 +13,8 @@ import librosa
 import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
-import PIL
+
+import label
 
 env.override()
 
@@ -170,3 +174,17 @@ def testDb():
     plt.figure()
     plt.imshow(intensity,cmap='gray', origin='lower',interpolation='none')
     plt.show()
+
+
+def testlabel():
+    js = json_load('/workspace/training/KEC/2/description.json')
+    lab = label.label(js)
+    print(lab)
+
+    
+
+def testFeature():
+    wav, sr = librosa.load('/workspace/training/KEC/2/room.wav', mono=False, sr=env.sampleRate)
+    f = feature.feature(wav)
+    plt.figure(f)
+    feature.exportFeature(f,env.target_dir+"test.png")
