@@ -4,8 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import hsv_to_rgb
 
-import featureExtraction.enviroment as env
-import featureExtraction.stft as stft
+from . import enviroment as env
+from . import stft
 
 
 def feature(wav):

@@ -1,7 +1,7 @@
 
 import numpy as np
-import featureExtraction.stft as stft
-import featureExtraction.enviroment as env
+from . import stft
+from . import enviroment as env
 
 
 def label(js):

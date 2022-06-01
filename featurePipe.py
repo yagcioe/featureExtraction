@@ -5,9 +5,9 @@ import shutil
 import librosa
 from matplotlib.font_manager import json_load
 import numpy as np
-import featureExtraction.enviroment as env
-import featureExtraction.feature as feature
-import featureExtraction.label as label
+from . import enviroment as env
+from . import feature
+from . import label
 
 
 def perc(list):

@@ -1,7 +1,7 @@
 import math
 import os
 import librosa
-import featureExtraction.enviroment as env
+from . import enviroment as env
 import numpy as np
 
 
