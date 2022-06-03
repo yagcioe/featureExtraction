@@ -29,7 +29,7 @@ def feature(wav):
 
     fig = plt.figure(frameon=False)
     feature = hsv_to_rgb(feature)
-    plt.imshow(feature, origin='lower', interpolation='none', aspect= 'auto')
+    plt.imshow(feature, origin='lower', interpolation='none', aspect='auto')
     plt.axis('off')
     plt.close(fig)
     return fig
@@ -48,10 +48,7 @@ def intensityFeature(D, E):
     intensity = np.maximum(np.abs(D), np.abs(E))
     intensity = stft.to_dB(intensity)
 
-    low = np.min(intensity)
-    high = np.max(intensity)
-    diff = high-low
-    intensity = (intensity-low) / diff
+    intensity = min(intensity / 80, 1)
     return intensity
 
 
@@ -59,10 +56,10 @@ def iidFeature(D, E):
     return stft.to_iid(D, E) if env.iid else np.ones(D.shape)
 
 
-def exportFeature(fig,name ,path):
+def exportFeature(fig, name, path):
     stft.ensurePath(path)
-    fullPath=path+name
+    fullPath = path+name
     plt.figure(fig)
     plt.axis('off')
-    plt.savefig(fullPath, bbox_inches='tight',pad_inches=0)
+    plt.savefig(fullPath, bbox_inches='tight', pad_inches=0)
     plt.close(fig)
