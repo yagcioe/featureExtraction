@@ -48,7 +48,10 @@ def intensityFeature(D, E):
     intensity = np.maximum(np.abs(D), np.abs(E))
     intensity = stft.to_dB(intensity)
 
-    intensity = min(intensity / 80, 1)
+    low = np.min(intensity)
+    high = np.max(intensity)
+    diff = high-low
+    intensity = (intensity-low) / diff
     return intensity
 
 

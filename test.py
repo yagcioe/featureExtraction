@@ -222,3 +222,6 @@ def testLable2():
                 print('correct section:'+str(findSection(az[i])))
                 print(label.simpleClassify(az[i]))
                 print('')
+
+def testwidth():
+    print(stft.frame_to_time(2)-stft.frame_to_time(1))
