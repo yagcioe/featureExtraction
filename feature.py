@@ -26,12 +26,11 @@ def feature(wav):
 
     # print(intensity[:,t])
     feature = np.dstack((ipd, iid, intensity))
-
+    plt.ioff()
     fig = plt.figure(frameon=False)
     feature = hsv_to_rgb(feature)
     plt.imshow(feature, origin='lower', interpolation='none', aspect='auto')
     plt.axis('off')
-    plt.close(fig)
     return fig
 
 
@@ -62,6 +61,7 @@ def iidFeature(D, E):
 def exportFeature(fig, name, path):
     stft.ensurePath(path)
     fullPath = path+name
+    plt.ioff()
     plt.figure(fig)
     plt.axis('off')
     plt.savefig(fullPath, bbox_inches='tight', pad_inches=0)
