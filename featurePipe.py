@@ -42,10 +42,9 @@ def transformSet(allPAths, target):
         export(fet, lab, id, target)
 
 
-def export(feat, lab, id, target):
-    feature.exportFeature(feat, f'{id}.png', env.target_dir+target+'images/')
+def export(fet, lab, id, target):
+    feature.exportFeature(fet, f'{id}.png', env.target_dir+target+'images/')
     label.exportLabel(lab, f'{id}.txt', env.target_dir+target+'labels/')
-
 
 def transformPath(s):
     wav, js = loadSample(s)

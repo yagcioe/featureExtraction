@@ -6,8 +6,8 @@ sampleRate = 16000
 """STFT"""
 
 iid = False
-n_fft = 2048  # zero padding for stft
-hop_Length = 256
+n_fft = 1024  # zero padding for stft
+hop_Length = n_fft//4
 
 
 """LAbel generation"""

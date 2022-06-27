@@ -1,7 +1,7 @@
 import math
-
+from PIL import Image
 import numpy as np
-from matplotlib import pyplot as plt
+import numpy as np
 from matplotlib.colors import hsv_to_rgb
 
 from . import enviroment as env
@@ -17,21 +17,13 @@ def feature(wav):
     iid = iidFeature(d1, d2)
     intensity = intensityFeature(d1, d2)
 
-    # print(intensity)
-    # print(intensity.shape)
-    # print(np.max(intensity))
-    # idx = np.unravel_index(np.argmax(intensity), intensity.shape)
-    # f , t = idx
-    # print(idx)
-
-    # print(intensity[:,t])
     feature = np.dstack((ipd, iid, intensity))
-    plt.ioff()
-    fig = plt.figure(frameon=False)
-    feature = hsv_to_rgb(feature)
-    plt.imshow(feature, origin='lower', interpolation='none', aspect='auto')
-    plt.axis('off')
-    return fig
+
+    feature = hsv_to_rgb(feature)[1:, 1:-1]
+    # rm 0 freq and 1 and last time col to get 640x512 px
+    iFeature = np.flip(np.floor(feature*256).astype(np.uint8), 0)
+    fet = Image.fromarray(iFeature, 'RGB')
+    return fet
 
 
 def ipdFeature(D, E):
@@ -58,11 +50,7 @@ def iidFeature(D, E):
     return stft.to_iid(D, E) if env.iid else np.ones(D.shape)
 
 
-def exportFeature(fig, name, path):
+def exportFeature(fet, name, path):
     stft.ensurePath(path)
     fullPath = path+name
-    plt.ioff()
-    plt.figure(fig)
-    plt.axis('off')
-    plt.savefig(fullPath, bbox_inches='tight', pad_inches=0)
-    plt.close(fig)
+    fet.save(fullPath)
