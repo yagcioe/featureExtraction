@@ -5,7 +5,7 @@ from . import enviroment as env
 import numpy as np
 
 
-def transform(wav: list[float]):  # Freq Bins x Time Bins
+def transform(wav):  # Freq Bins x Time Bins
     return librosa.stft(wav, n_fft=env.n_fft, hop_length=env.hop_Length)
 
 
