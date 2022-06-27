@@ -39,7 +39,7 @@ def exportLabel(lab, name, path):
 
 def stringifySimpleLabel(lab):
     lab = list(map(str, lab))
-    return '\t'.join(lab)
+    return ' '.join(lab)
 
 
 def stringifyLabel(lab):

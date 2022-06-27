@@ -9,6 +9,7 @@ from . import enviroment as env
 from . import feature
 from . import label
 
+env.override()
 
 def perc(list):
     sum = np.sum(list)
