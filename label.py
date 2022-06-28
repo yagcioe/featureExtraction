@@ -23,7 +23,6 @@ def label(js):
 
         azimuth = speaker['direction']['azimuth']
         clas = simpleClassify(azimuth)
-        clas = 0# simple yes no detection instead of classes
         box = [clas, x, y, width, heigth]  # normalize to [0,1]
 
         boundingBoxes.append(box)
